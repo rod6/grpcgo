@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package ping;
+
+option go_package = "pkg/ping";
+
+service PingService {
+    rpc Pong(Ping) returns (Ping);
+}
+
+message Ping {
+    string id = 1;
+}

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "pkg/user";
+
+service UserService {
+    rpc Add(User) returns (User);
+}
+
+message User {
+    string id = 1;
+    string name = 2;
+}
