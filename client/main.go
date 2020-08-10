@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/libgo/logx"
 	"google.golang.org/grpc"
 
 	"demo/pkg/ping"
@@ -23,7 +24,7 @@ func main() {
 	for {
 		resp, err := pingCli.Pong(context.Background(), &ping.Ping{Id: uuid.New().String()})
 		if err != nil {
-			panic(err)
+			logx.Errorf("error: %s", err.Error())
 		}
 		fmt.Println(resp)
 		<-time.After(time.Second)
