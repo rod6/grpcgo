@@ -11,7 +11,8 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
-const _ = grpc.SupportPackageIsVersion6
+// Requires gRPC-Go v1.32.0 or later.
+const _ = grpc.SupportPackageIsVersion7
 
 // PingServiceClient is the client API for PingService service.
 //
@@ -49,13 +50,20 @@ type PingServiceServer interface {
 type UnimplementedPingServiceServer struct {
 }
 
-func (*UnimplementedPingServiceServer) Pong(context.Context, *Ping) (*Ping, error) {
+func (UnimplementedPingServiceServer) Pong(context.Context, *Ping) (*Ping, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Pong not implemented")
 }
-func (*UnimplementedPingServiceServer) mustEmbedUnimplementedPingServiceServer() {}
+func (UnimplementedPingServiceServer) mustEmbedUnimplementedPingServiceServer() {}
 
-func RegisterPingServiceServer(s *grpc.Server, srv PingServiceServer) {
-	s.RegisterService(&_PingService_serviceDesc, srv)
+// UnsafePingServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to PingServiceServer will
+// result in compilation errors.
+type UnsafePingServiceServer interface {
+	mustEmbedUnimplementedPingServiceServer()
+}
+
+func RegisterPingServiceServer(s grpc.ServiceRegistrar, srv PingServiceServer) {
+	s.RegisterService(&PingService_ServiceDesc, srv)
 }
 
 func _PingService_Pong_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -76,7 +84,10 @@ func _PingService_Pong_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-var _PingService_serviceDesc = grpc.ServiceDesc{
+// PingService_ServiceDesc is the grpc.ServiceDesc for PingService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var PingService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "ping.PingService",
 	HandlerType: (*PingServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
